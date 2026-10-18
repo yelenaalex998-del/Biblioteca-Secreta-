@@ -117,7 +117,7 @@
     .dot-2 { background-color: var(--dot2-color); }
     .dot-3 { background-color: var(--dot3-color); }
 
-    /* Barra de Personalização (Escondida por padrão) */
+    /* Barra de Personalização */
     .customizer-bar {
       background: rgba(17, 24, 39, 0.05);
       border-bottom: 1px solid #e5e7eb;
@@ -338,7 +338,7 @@
       position: relative;
     }
 
-    /* Botão de Engrenagem e Menu Dropdown nos Cards */
+    /* Botão de Engrenagem e Menu Dropdown */
     .gear-menu-container {
       position: relative;
     }
@@ -762,7 +762,6 @@
       root.style.setProperty('--status-andamento-bg', customTheme.statusAndamento);
       root.style.setProperty('--status-hiatus-bg', customTheme.statusHiatus);
 
-      // Sync inputs
       syncInput('pickerHeaderBg', 'hexHeaderBg', customTheme.headerBg);
       syncInput('pickerDot1', 'hexDot1', customTheme.dot1);
       syncInput('pickerDot2', 'hexDot2', customTheme.dot2);
@@ -825,7 +824,6 @@
           if (item.status === 'Andamento') badgeClass = 'status-andamento';
           if (item.status === 'Hiatus') badgeClass = 'status-hiatus';
 
-          // Garante que o link tenha formato correto com protocolo
           let fullUrl = item.link;
           if (fullUrl && !fullUrl.startsWith('http://') && !fullUrl.startsWith('https://')) {
             fullUrl = 'https://' + fullUrl;
@@ -857,10 +855,8 @@
       });
     }
 
-    // Controle do Menu da Engrenagem ⚙️
     window.toggleGearMenu = function(event, index) {
       event.stopPropagation();
-      // Fecha outros menus abertos
       document.querySelectorAll('.gear-dropdown').forEach(el => {
         if(el.id !== `gearDropdown-${index}`) el.classList.remove('show');
       });
@@ -869,7 +865,6 @@
       if(dropdown) dropdown.classList.toggle('show');
     };
 
-    // Fecha o menu da engrenagem se clicar fora
     document.addEventListener('click', () => {
       document.querySelectorAll('.gear-dropdown').forEach(el => el.classList.remove('show'));
     });
@@ -956,7 +951,6 @@
       }
     };
 
-    // Exportar e Importar Backup
     document.getElementById('btnExportBackup').addEventListener('click', function() {
       const dataToExport = {
         manhwas: manhwas,
@@ -1008,7 +1002,6 @@
       backupFileInput.value = '';
     });
 
-    // Toggle da barra de personalização ao clicar na paleta 🎨
     document.getElementById('btnToggleCustomizer').addEventListener('click', () => {
       document.getElementById('customizerBar').classList.toggle('active');
     });
@@ -1018,13 +1011,11 @@
     document.getElementById('searchInput').addEventListener('input', renderGrid);
     document.getElementById('filterStatus').addEventListener('change', renderGrid);
 
-    // Color picker e Hex sync do Modal
     const picker = document.getElementById('inputColorPicker');
     const hexInput = document.getElementById('inputColorHex');
     picker.addEventListener('input', (e) => hexInput.value = e.target.value);
     hexInput.addEventListener('input', (e) => picker.value = e.target.value);
 
-    // Binds dos seletores da barra de personalização
     bindColorSync('pickerHeaderBg', 'hexHeaderBg', 'headerBg');
     bindColorSync('pickerDot1', 'hexDot1', 'dot1');
     bindColorSync('pickerDot2', 'hexDot2', 'dot2');
@@ -1038,6 +1029,15 @@
 
     loadData();
     renderGrid();
+
+    // Registro Obrigatório do Service Worker (SW) para PWA
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then(reg => console.log('Service Worker registrado com sucesso!'))
+          .catch(err => console.log('Falha ao registrar Service Worker:', err));
+      });
+    }
   </script>
 </body>
 </html>
