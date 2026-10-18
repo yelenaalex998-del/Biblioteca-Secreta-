@@ -1,3 +1,5 @@
+const CACHE_NAME = 'biblioteca-v1';
+
 self.addEventListener('install', (e) => {
   e.waitUntil(self.skipWaiting());
 });
@@ -7,5 +9,9 @@ self.addEventListener('activate', (e) => {
 });
 
 self.addEventListener('fetch', (e) => {
-  // Permite o carregamento normal da aplicação
+  e.respondWith(
+    caches.match(e.request).then((response) => {
+      return response || fetch(e.request);
+    })
+  );
 });
